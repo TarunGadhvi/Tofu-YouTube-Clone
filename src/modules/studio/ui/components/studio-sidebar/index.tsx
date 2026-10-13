@@ -2,15 +2,15 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LogOutIcon, VideoIcon } from "lucide-react"
+import { BookOpenIcon, LogOutIcon, VideoIcon } from "lucide-react"
 
 import { Separator } from "@/components/ui/separator";
-import { 
-  Sidebar, 
-  SidebarContent, 
-  SidebarGroup, 
-  SidebarMenu, 
-  SidebarMenuButton, 
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarMenu,
+  SidebarMenuButton,
   SidebarMenuItem
 } from "@/components/ui/sidebar"
 
@@ -18,7 +18,7 @@ import { StudioSidebarHeader } from "./studio-sidebar-header";
 
 export const StudioSidebar = () => {
   const pathname = usePathname();
-  
+
   return (
     <Sidebar className="pt-16 z-40" collapsible="icon">
       <SidebarContent className="bg-background">
@@ -26,10 +26,18 @@ export const StudioSidebar = () => {
           <SidebarMenu>
             <StudioSidebarHeader />
             <SidebarMenuItem>
-              <SidebarMenuButton isActive={pathname === "/studio"} tooltip="Exit studio" asChild>
+              <SidebarMenuButton isActive={pathname === "/studio"} tooltip="Content" asChild>
                 <Link prefetch href="/studio">
                   <VideoIcon className="size-5" />
                   <span className="text-sm">Content</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton isActive={pathname === "/studio/trails"} tooltip="Trails" asChild>
+                <Link prefetch href="/studio/trails">
+                  <BookOpenIcon className="size-5" />
+                  <span className="text-sm">Trails</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

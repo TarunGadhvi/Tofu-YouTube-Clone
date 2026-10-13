@@ -1,11 +1,13 @@
 import { relations } from "drizzle-orm";
-import { 
-  foreignKey, 
-  integer, 
-  pgEnum, 
-  pgTable, 
-  primaryKey, 
-  text, 
+import {
+  boolean,
+  foreignKey,
+  integer,
+  json,
+  pgEnum,
+  pgTable,
+  primaryKey,
+  text,
   timestamp,
   uniqueIndex,
   uuid
@@ -291,3 +293,107 @@ export const videoReactionRelations = relations(videoReactions, ({ one }) => ({
 export const videoReactionSelectSchema = createSelectSchema(videoReactions);
 export const videoReactionInsertSchema = createInsertSchema(videoReactions);
 export const videoReactionUpdateSchema = createUpdateSchema(videoReactions);
+
+export const trails = pgTable("trails", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  title: text("title").notNull(),
+  description: text("description"),
+  thumbnailUrl: text("thumbnail_url"),
+  thumbnailKey: text("thumbnail_key"),
+  isPublished: boolean("is_published").default(false).notNull(),
+  userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const trailRelations = relations(trails, ({ one, many }) => ({
+  user: one(users, {
+    fields: [trails.userId],
+    references: [users.id],
+  }),
+  steps: many(trailSteps),
+  enrollments: many(trailEnrollments),
+}));
+
+export const trailSelectSchema = createSelectSchema(trails);
+export const trailInsertSchema = createInsertSchema(trails);
+export const trailUpdateSchema = createUpdateSchema(trails);
+
+export const trailSteps = pgTable("trail_steps", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  trailId: uuid("trail_id").references(() => trails.id, { onDelete: "cascade" }).notNull(),
+  videoId: uuid("video_id").references(() => videos.id, { onDelete: "cascade" }).notNull(),
+  position: integer("position").notNull(),
+  title: text("title"),
+  checkpointQuestion: text("checkpoint_question"),
+  checkpointOptions: json("checkpoint_options").$type<string[]>(),
+  correctOptionIndex: integer("correct_option_index"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const trailStepRelations = relations(trailSteps, ({ one, many }) => ({
+  trail: one(trails, {
+    fields: [trailSteps.trailId],
+    references: [trails.id],
+  }),
+  video: one(videos, {
+    fields: [trailSteps.videoId],
+    references: [videos.id],
+  }),
+  progress: many(trailStepProgress),
+}));
+
+export const trailStepSelectSchema = createSelectSchema(trailSteps);
+export const trailStepInsertSchema = createInsertSchema(trailSteps);
+export const trailStepUpdateSchema = createUpdateSchema(trailSteps);
+
+export const trailEnrollments = pgTable("trail_enrollments", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  trailId: uuid("trail_id").references(() => trails.id, { onDelete: "cascade" }).notNull(),
+  userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  completed: boolean("completed").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const trailEnrollmentRelations = relations(trailEnrollments, ({ one, many }) => ({
+  trail: one(trails, {
+    fields: [trailEnrollments.trailId],
+    references: [trails.id],
+  }),
+  user: one(users, {
+    fields: [trailEnrollments.userId],
+    references: [users.id],
+  }),
+  progress: many(trailStepProgress),
+}));
+
+export const trailEnrollmentSelectSchema = createSelectSchema(trailEnrollments);
+export const trailEnrollmentInsertSchema = createInsertSchema(trailEnrollments);
+export const trailEnrollmentUpdateSchema = createUpdateSchema(trailEnrollments);
+
+export const trailStepProgress = pgTable("trail_step_progress", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  enrollmentId: uuid("enrollment_id").references(() => trailEnrollments.id, { onDelete: "cascade" }).notNull(),
+  stepId: uuid("step_id").references(() => trailSteps.id, { onDelete: "cascade" }).notNull(),
+  completed: boolean("completed").default(false).notNull(),
+  quizAnswered: boolean("quiz_answered").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const trailStepProgressRelations = relations(trailStepProgress, ({ one }) => ({
+  enrollment: one(trailEnrollments, {
+    fields: [trailStepProgress.enrollmentId],
+    references: [trailEnrollments.id],
+  }),
+  step: one(trailSteps, {
+    fields: [trailStepProgress.stepId],
+    references: [trailSteps.id],
+  }),
+}));
+
+export const trailStepProgressSelectSchema = createSelectSchema(trailStepProgress);
+export const trailStepProgressInsertSchema = createInsertSchema(trailStepProgress);
+export const trailStepProgressUpdateSchema = createUpdateSchema(trailStepProgress);

@@ -33,6 +33,7 @@ export const protectedProcedure = t.procedure.use(async function isAuthed(opts) 
   const { ctx } = opts;
 
   if (!ctx.clerkUserId) {
+    console.warn("[TRPC ProtectedProcedure] Missing Clerk Auth");
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
@@ -43,6 +44,7 @@ export const protectedProcedure = t.procedure.use(async function isAuthed(opts) 
     .limit(1);
 
   if (!user) {
+    console.warn("[TRPC ProtectedProcedure] Clerk user found, but DB user NOT found for ClerkID:", ctx.clerkUserId);
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 

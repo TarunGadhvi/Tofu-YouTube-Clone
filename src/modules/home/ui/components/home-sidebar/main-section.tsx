@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth, useClerk } from "@clerk/nextjs";
-import { FlameIcon, HomeIcon, PlaySquareIcon } from "lucide-react";
+import { BookOpenIcon, FlameIcon, HomeIcon, PlaySquareIcon } from "lucide-react";
 
-import { 
-  SidebarGroup, 
-  SidebarGroupContent, 
-  SidebarMenu, 
-  SidebarMenuButton, 
+import {
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
   SidebarMenuItem
 } from "@/components/ui/sidebar";
 
@@ -18,6 +18,11 @@ const items = [
     title: "Home",
     url: "/",
     icon: HomeIcon,
+  },
+  {
+    title: "Trails",
+    url: "/trails",
+    icon: BookOpenIcon,
   },
   {
     title: "Subscribed",
