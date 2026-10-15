@@ -493,23 +493,43 @@ export const videosRouter = createTRPCRouter({
   create: protectedProcedure.mutation(async ({ ctx }) => {
     const { id: userId } = ctx.user;
 
-    const upload = await mux.video.uploads.create({
-      new_asset_settings: {
-        passthrough: userId,
-        playback_policy: ["public"],
-        input: [
-          {
-            generated_subtitles: [
-              {
-                language_code: "en",
-                name: "English",
-              },
-            ],
-          },
-        ],
-      },
-      cors_origin: "*", // TODO: In production, set to your url
-    });
+    let upload;
+    try {
+      upload = await mux.video.uploads.create({
+        new_asset_settings: {
+          passthrough: userId,
+          playback_policy: ["public"],
+          input: [
+            {
+              generated_subtitles: [
+                {
+                  language_code: "en",
+                  name: "English",
+                },
+              ],
+            },
+          ],
+        },
+        cors_origin: "*", // TODO: In production, set to your url
+      });
+    } catch (error: unknown) {
+      console.error("Mux upload creation failed:", error);
+      let message = "Mux upload creation failed";
+      if (error instanceof Error) {
+        message = error.message;
+      } else if (typeof error === "object" && error !== null) {
+        const e = error as Record<string, unknown>;
+        if (typeof e.message === "string") {
+          message = e.message;
+        } else if (e.error && typeof e.error === "object") {
+          const innerError = e.error as Record<string, unknown>;
+          if (Array.isArray(innerError.messages) && innerError.messages.length > 0) {
+            message = String(innerError.messages[0]);
+          }
+        }
+      }
+      throw new TRPCError({ code: "BAD_REQUEST", message });
+    }
 
     const [video] = await db
       .insert(videos)
