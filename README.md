@@ -4,6 +4,14 @@
 
 A modern YouTube clone built with Next.js, Drizzle ORM, and modern UI libraries, featuring advanced video processing, real-time transcription, and a responsive design.
 
+## Project Guide
+This project was completed under the guidance of
+**Dr. Anjum Y. Mansuri**, Assistant Professor, Computer Applications,
+LJ Institute of Computer Applications, LJ University, Ahmedabad.
+GitHub: [@anjum-mansuri](https://github.com/anjum-mansuri)
+
+ UDP-1 250120509
+ 
 ## Key Features
 
 - 🎥 Advanced video player with quality controls
