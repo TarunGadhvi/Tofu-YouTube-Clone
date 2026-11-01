@@ -1,4 +1,4 @@
-# YouTube Clone
+# Tofu
 
 ![thumbnail](https://img.youtube.com/vi/ArmPzvHTcfQ/maxresdefault.jpg)
 
