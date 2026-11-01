@@ -1,4 +1,4 @@
-# Tofu
+# Tofu: A Video Streaming and uploading platform
 
 ![thumbnail](https://img.youtube.com/vi/ArmPzvHTcfQ/maxresdefault.jpg)
 
